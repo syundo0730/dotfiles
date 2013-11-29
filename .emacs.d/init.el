@@ -106,8 +106,8 @@
 (setq scroll-step 1)
 ;; スクロールバーを右側に表示する
 (set-scroll-bar-mode 'right)
-;; デフォルトの透明度を設定する (85%)
-(add-to-list 'default-frame-alist '(alpha . 85))
+;; デフォルトの透明度を設定する (70%)
+(add-to-list 'default-frame-alist '(alpha . 70))
 ;; 行番号表示
 (global-linum-mode t) ;デフォルトでlinum-modeを有効にする
 (setq linum-format "%2d") ;2桁分の領域を確保して行番号のあとにスペースを入れる
@@ -205,7 +205,7 @@
 
 ;;Re-roadしてinit.elを適用してくれる
 ;;reload
-(global-et-key
+(global-set-key
  [f12] 'eval-buffer)
 
 ;; cua-modeの設定
@@ -338,6 +338,10 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Egg
+;; gitのための拡張
+(when (executable-find "git")
+  (require 'egg nil t))
 
 ;; multi-term
 ;; (install-elisp "http://www.emacswiki.org/emacs/download/multi-term.el")
@@ -382,6 +386,7 @@
 ;;; direx
 ;; http://cx4a.blogspot.jp/2011/12/popwineldirexel.html
 ;; https://github.com/m2ym/direx-el
+;;(install-elisp "https://raw.github.com/m2ym/direx-el/master/direx.el")
 (when (require 'direx nil t)
   (global-set-key (kbd "C-x D") 'direx:find-directory-other-window)
   (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory-other-window)
