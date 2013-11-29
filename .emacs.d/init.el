@@ -106,8 +106,8 @@
 (setq scroll-step 1)
 ;; スクロールバーを右側に表示する
 (set-scroll-bar-mode 'right)
-;; デフォルトの透明度を設定する (70%)
-(add-to-list 'default-frame-alist '(alpha . 70))
+;; デフォルトの透明度を設定する (85%)
+(add-to-list 'default-frame-alist '(alpha . 85))
 ;; 行番号表示
 (global-linum-mode t) ;デフォルトでlinum-modeを有効にする
 (setq linum-format "%2d") ;2桁分の領域を確保して行番号のあとにスペースを入れる
@@ -201,10 +201,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;編集補完機能など
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Anything
-;;(auto-install-batch anything)
+;;(auto-install-batch "anything")
+
 (when (require 'anything nil t)
   (setq
    ;; 候補を表示するまでの時間。デフォルトは0.5
@@ -241,6 +241,27 @@
   (when (require 'descbinds-anything nil t)
     ;; describe-bindingsをAnythingに置き換える
     (descbinds-anything-install)))
+
+;; M-yにanythig-show-kill-ringを割り当てる
+(global-set-key (kbd "M-y") 'anything-show-kill-ring)
+
+;; color-moccurの設定
+;(auto-install-from-emacswiki color-moccur)
+(when (require 'color-moccur nil t)
+  ;; M-oにoccur-by-moccurを割り当て
+  (define-key global-map (kbd "M-o") 'occur-by-moccur)
+  ;; スペース区切りでAND検索
+  (setq moccur-split-word t)
+  ;; ディレクトリ検索のとき除外するファイル
+  (add-to-list 'dmoccur-exclusion-mask "\\.DS_Store")
+  (add-to-list 'dmoccur-exclusion-mask "^#.+#$")
+  ;; Migemoを利用できる環境であればMigemoを使う
+  (when (and (executable-find "cmigemo")
+             (require 'migemo nil t))
+    (setq moccur-use-migemo t)))
+
+;(auto-install-from-emacswiki moccur-edit)
+(require 'moccur-edit nil t)
 
 ;;Re-roadしてinit.elを適用してくれる
 ;;reload
@@ -453,10 +474,10 @@
   (push '("*YaTeX-typesetting*") popwin:special-display-config)
   )
 
-;;; brows-yank
-;; http://www.bookshelf.jp/soft/meadow_32.html#SEC460
-(load "browse-yank")
-(global-set-key "\M-y" 'browse-yank)
+;; ;;; brows-yank
+;; ;; http://www.bookshelf.jp/soft/meadow_32.html#SEC460
+;; (load "browse-yank")
+;; (global-set-key "\M-y" 'browse-yank)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; YaTeX
