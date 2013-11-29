@@ -22,8 +22,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Emacs Lisp Package Archive（ELPA）──Emacs Lispパッケージマネージャ
+;; Emacs24では標準装備になった
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; package.elの設定
+;; ;; package.elの設定
 (when (require 'package nil t)
   ;; パッケージリポジトリにMarmaladeと開発者運営のELPAを追加
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -55,31 +56,42 @@
  nil 'japanese-jisx0208
  (font-spec :family "Meiryo"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;文字コード等に関する設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(set-language-environment "japanese")
+(prefer-coding-system 'utf-8)
+
+;;MacOS
+(when (eq system-type 'darwin)
+  (require 'ucs-normalize)
+  (set-file-name-coding-system 'utf-8-hfs)
+  (setq locale-coding-system 'utf-8-hfs))
+;;Windows
+(when (eq window-system 'w32)
+  (set-file-name-coding-system 'cp932)
+  (setq locale-coding-system 'cp932))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;フレームの設定など
+;;;表示に関する設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 起動時にスタートアップ画面を表示しない
 (setq inhibit-startup-message t)
+;; "yes or no" の代わりに "y or n" の省略形を使用する
+(fset 'yes-or-no-p 'y-or-n-p)
 ;; scratchバッファのメッセージを消す
 (setq initial-scratch-message "")
-;;ビープ音を鳴らさない
-(setq visible-bell t)
-
 ;; Messagesバッファの消去
 (setq message-log-max nil)
 (kill-buffer "*Messages*")
-
+;;ビープ音を鳴らさない
+(setq visible-bell t)
 ;; メニューバーを非表示にする
 (menu-bar-mode -1)
 ;; ツールバーを非表示にする
 (tool-bar-mode -1)
 ;; タイトルバーにファイル名を表示する
 (setq frame-title-format (format "emacs@%s : %%f" (system-name)))
-;; "yes or no" の代わりに "y or n" の省略形を使用する
-(fset 'yes-or-no-p 'y-or-n-p)
-;; 括弧を強調表示する
-(show-paren-mode t)
 ;; カーソル位置の行番号を表示する
 (line-number-mode t)
 ;; カーソル位置の列番号を表示する
@@ -88,40 +100,32 @@
 (setq display-time-day-and-date t)
 (setq display-time-24hr-format t)
 (display-time)
+;; 括弧を強調表示する
+(show-paren-mode t)
 ;; 1 行ずつスムーズにスクロールする
 (setq scroll-step 1)
 ;; スクロールバーを右側に表示する
 (set-scroll-bar-mode 'right)
-
-;; 行番号
+;; デフォルトの透明度を設定する (85%)
+(add-to-list 'default-frame-alist '(alpha . 85))
+;; 行番号表示
 (global-linum-mode t) ;デフォルトでlinum-modeを有効にする
 (setq linum-format "%2d") ;2桁分の領域を確保して行番号のあとにスペースを入れる
 
-;; バッファの末尾で新たな行を追加しない
-(setq next-line-add-newlines nil)
-;; 行頭で行削除 kill-line (C-k) したら改行も含めて行全体を削除する
-(setq kill-whole-line t)
+;; リージョンの文字数をカウント，モードラインに表示
+(defun count-lines-and-chars ()
+  (if mark-active
+      (format "%d lines,%d chars "
+              (count-lines (region-beginning) (region-end))
+              (- (region-end) (region-beginning)))
+      ;;(count-lines-region (region-beginning) (region-end)) ;; これだとエコーエリアがチラつく
+    ""))
+
+(add-to-list 'default-mode-line-format
+             '(:eval (count-lines-and-chars)))
 
 ;; リージョンをハイライト表示する
 (setq transient-mark-mode t)
-
-;; リージョン上書きできるようにする
-(delete-selection-mode t)
-
-;; クリップボードを他のアプリケーションと共用にする
-(setq x-select-enable-clipboard t)
-;; ファイル名を補完する時に大文字と小文字を区別しない
-(setq read-file-name-completion-ignore-case t)
-
-;; M-mで行中で改行
-(global-set-key (kbd "M-m") (kbd "C-e C-j"))
-;; backspaceをC-hにバインドする
-(global-set-key (kbd "C-h") 'delete-backward-char)
-;; ウィンドウ切り替え
-(global-set-key (kbd "C-t") 'other-window)
-
-;; デフォルトの透明度を設定する (85%)
-(add-to-list 'default-frame-alist '(alpha . 85))
 
 ;; 関数内の強調表示
 (show-paren-mode 1)
@@ -149,6 +153,40 @@
         (sit-for 0.5)
         (delete-overlay ol)))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;キー割り当て
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C-mで改行と同時にインデントする
+(global-set-key (kbd "C-m") 'newline-and-indent)
+;; backspaceをC-hにバインドする
+(global-set-key (kbd "C-h") 'delete-backward-char)
+;; ウィンドウ切り替え
+(global-set-key (kbd "C-t") 'other-window)
+;; 折り返しトグルコマンド
+(global-set-key (kbd "C-c l") 'toggle-truncate-lines)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;編集に関する設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; バックアップとオートセーブファイルを~/.emacs.d/backups/へ集める
+(add-to-list 'backup-directory-alist
+             (cons "." "~/.emacs.d/backups/"))
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "~/.emacs.d/backups/") t)))
+
+;; バッファの末尾で新たな行を追加しない
+(setq next-line-add-newlines nil)
+;; 行頭で行削除 kill-line (C-k) したら改行も含めて行全体を削除する
+(setq kill-whole-line t)
+;; リージョン上書きできるようにする
+(delete-selection-mode t)
+;; クリップボードを他のアプリケーションと共用にする
+(setq x-select-enable-clipboard t)
+;; ファイル名を補完する時に大文字と小文字を区別しない
+(setq read-file-name-completion-ignore-case t)
+
 ;; ;;; ibus-mode
 ;; (when(require 'ibus nil t)
 ;; ;; Turn on ibus-mode automatically after loading .emacs
@@ -161,19 +199,13 @@
 ;; (setq ibus-cursor-color '("limegreen" "white" "blue"))
 ;; (global-set-key (kbd "C-;") 'ibus-toggle))
 
-;; バックアップとオートセーブファイルを~/.emacs.d/backups/へ集める
-(add-to-list 'backup-directory-alist
-             (cons "." "~/.emacs.d/backups/"))
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "~/.emacs.d/backups/") t)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;編集補完機能など
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;Re-roadしてinit.elを適用してくれる
 ;;reload
-(global-set-key
+(global-et-key
  [f12] 'eval-buffer)
 
 ;; cua-modeの設定
