@@ -2,3 +2,6 @@
 *~
 /.emacs.d/*
 !/.emacs.d/init.el
+!/.emacs.d/elisp
+!/.emacs.d/elpa
+!/.emacs.d/LaTeX-template

@@ -31,7 +31,8 @@
   (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
   ;; インストールしたパッケージにロードパスを通して読み込む
-  (package-initialize))
+  (package-initialize)
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; auto-installの設定
@@ -153,6 +154,33 @@
         (sit-for 0.5)
         (delete-overlay ol)))))
 
+;; コメント折りたたみ
+(add-hook 'c++-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'c-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'scheme-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'lisp-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'python-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'ruby-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+(add-hook 'web-mode-hook
+          '(lambda ()
+             (hs-minor-mode 1)))
+
+(define-key global-map (kbd "C-;") 'hs-toggle-hiding) 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;キー割り当て
@@ -324,11 +352,41 @@
 ;; オフセット4
 (setq-default tab-width 4)
 
+;; web-mode
+;;(install-elisp "https://raw.github.com/fxbois/web-mode/master/web-mode.el")
+(require 'web-mode)
+;;; emacs 23以下の互換
+(when (< emacs-major-version 24)
+  (defalias 'prog-mode 'fundamental-mode))
+
+;;; 適用する拡張子
+(add-to-list 'auto-mode-alist '("\\.phtml$"     . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsp$"       . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x$"   . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb$"       . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?$"     . web-mode))
+
+;;; インデント数
+(defun web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-html-offset   2)
+  (setq web-mode-css-offset    2)
+  (setq web-mode-script-offset 2)
+  (setq web-mode-php-offset    2)
+  (setq web-mode-java-offset   2)
+  (setq web-mode-asp-offset    2))
+(add-hook 'web-mode-hook 'web-mode-hook)
+
+
 ;;;; This snippet enables lua-mode
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq lua-indent-level 4);インデント4にする
+
+;;php-mode
+(load "php-mode")
 
 ;; 削除をゴミ箱の移動に置き換える
 (setq delete-by-moving-to-trash t)
@@ -371,7 +429,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq my-ignore-buffer-list
       '("*Help*" "*Compile-Log*" "*Mew completions*" "*Completions*"
-        "*Shell Command Output*" "*Apropos*" "*Buffer List*" "*Messages*" "*scratch*"))
+        "*Shell Command Output*" "*Apropos*" "*Buffer List*" "*Messages*" "*scratch*" "*Egg:Select Action*" "*tag-info*"))
+
 (defun my-visible-buffer (blst)
   (let ((bufn (buffer-name (car blst))))
     (if (or (= (aref bufn 0) ? ) (member bufn my-ignore-buffer-list))
@@ -399,9 +458,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Egg
-;; gitのための拡張
+;; ;; gitのための拡張
 (when (executable-find "git")
   (require 'egg nil t))
+
+;; Magit
+;; gitのための拡張
+;;(require 'magit)
 
 ;; multi-term
 ;; (install-elisp "http://www.emacswiki.org/emacs/download/multi-term.el")
@@ -438,6 +501,19 @@
 (color-theme-billw))
 
 ;;; dired
+;;;自動生成を抑制
+(defun dired-open-in-accordance-with-situation ()
+    (interactive)
+    (cond ((string-match "\\(?:\\.\\.?\\)"
+                         (format "%s" (thing-at-point 'filename)))
+           (dired-find-alternate-file))
+          ((file-directory-p (dired-get-filename))
+           (dired-find-alternate-file))
+          (t
+           (dired-find-file))))
+(define-key dired-mode-map (kbd "RET") 'dired-open-in-accordance-with-situation)
+(define-key dired-mode-map (kbd "<left>") 'dired-up-directory)
+(define-key dired-mode-map (kbd "<right>") 'dired-open-in-accordance-with-situation)
 ;; 移動先ディレクトリ名として他方のバッファのディレクトリ名を自動で挿入
 (setq dired-dwim-target t)
 ;; C-x dで現在のファイルのディレクトリを開く
@@ -463,11 +539,16 @@
   ;;direx
   (push '(direx:direx-mode :position left :width 30 :dedicated t) popwin:special-display-config)
   ;;undo-tree
-  (push '(" *undo-tree*" :width 0.3 :position right) popwin:special-display-config)
+  (push '("*undo-tree*" :width 0.3 :position right) popwin:special-display-config)
   ;;scratch
   (push '("*scratch*") popwin:special-display-config)
   ;; M-x compile
   (push '(compilation-mode :noselect t) popwin:special-display-config)
+  ;; Egg
+  (push '("*Egg:Select Action*" :position right) popwin:special-display-config)
+  (push '("*tag-info*" :position right) popwin:special-display-config)
+  ;; anything
+  (push '("*anything kill-ring*" :position right) popwin:special-display-config)
   )
 (when (require 'popwin-yatex nil t)
   ;;YaTeX
@@ -487,6 +568,8 @@
 (setq auto-mode-alist 
       (cons (cons "\\.tex$" 'yatex-mode) auto-mode-alist))
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+;; 自動改行を無効化する
+(add-hook 'yatex-mode-hook'(lambda ()(setq auto-fill-function nil)))
 
 ;; 文章作成時の日本語文字コード
 ;; 0: no-converion
@@ -494,13 +577,13 @@
 ;; 2: ISO-2022-JP (other default)
 ;; 3: EUC
 ;; 4: UTF-8
-;;(setq YaTeX-kanji-code 4)
+;; (setq YaTeX-kanji-code 4)
 
 (setq YaTeX-inhibit-prefix-letter nil)
 
-(setq tex-command "platex")
-(setq dvi2-command-format "dviout %s ")
-(setq dviprint-command-format "dvipdfmx %s ")
+(setq tex-command "platex -guess-input-enc")
+(setq dvi2-command-format "dviout %s")
+(setq dviprint-command-format "dvipdfmx %s")
 
 ; ~/.LaTeX-templateは新規ファイル作成時に自動挿入するファイル名
 (setq YaTeX-template-file "~/.emacs.d/LaTeX-template")
