@@ -1,12 +1,12 @@
-" 背景を透明にする
 gui
-"set transparency=230
-
+if has('win32')
+    " 背景を透明にする
+    set transparency=230
+    " VimのGUI版で使われるフォントのリストである。
+    :set guifont=MS_Gothic:h12:cSHIFTJIS
+endif
 " カラースキーマをロードする。
 :colorscheme billw
-
-" VimのGUI版で使われるフォントのリストである。
-":set guifont=MS_Gothic:h12:cSHIFTJIS
 
 " 画面上の列幅を設定する。
 :set columns=100

@@ -1,54 +1,196 @@
-" ŒŸõƒpƒ^[ƒ“‚É‚¨‚¢‚Ä‘å•¶š‚Æ¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢Bi—LŒø:ignorecase/–³Œø:noignorecasej
+filetype plugin on
+filetype indent on
+
+"windows ç’°å¢ƒã«ãŠã„ã¦vimfilesã§ã¯ãªã.vimã‚’ä½¿ã†
+:set runtimepath+=$HOME/.vim
+
+"--------------------------------------------------------------------------
+" neobundle
+
+ " Note: Skip initialization for vim-tiny or vim-small.
+ if !1 | finish | endif
+
+ if has('vim_starting')
+   set nocompatible               " Be iMproved
+
+   " Required:
+   set runtimepath+=~/.vim/bundle/neobundle.vim/
+ endif
+
+ " Required:
+ call neobundle#begin(expand('~/.vim/bundle/'))
+
+ " Let NeoBundle manage NeoBundle
+ " Required:
+ NeoBundleFetch 'Shougo/neobundle.vim'
+
+ " My Bundles here:
+ " Refer to |:NeoBundle-examples|.
+ " Note: You don't set neobundle setting in .gvimrc!
+ NeoBundle 'thinca/vim-quickrun'
+ NeoBundle 'Shougo/unite.vim'
+ NeoBundle 'spolu/dwm.vim'
+
+
+ call neobundle#end()
+ 
+ " Required:
+ filetype plugin indent on
+
+ " If there are uninstalled bundles found on startup,
+ " this will conveniently prompt you to install them.
+ NeoBundleCheck
+"---------------------------------------------------------------------------
+
+"" quickrun
+""
+"set noshellslash
+let g:quickrun_config = {
+\   'tex': {
+\       'command': 'latexmk',
+\       'exec': ['%c -gg -pdfdvi "%S:t:r.tex"', 'rundll32 shell32,ShellExec_RunDLL SumatraPDF -reuse-instance -inverse-search "\"' . $VIM . '\gvim.exe\" -n --remote-silent +\%%l \"\%%f\"" ' . '"%S:r.pdf"']
+\   },
+\}
+
+" ãƒ“ãƒ¼ãƒ—éŸ³ã‚’æ¶ˆã™
+:set visualbell t_vb=
+
+" ç‰©ç†çš„ç§»å‹•ã‚’åŸºæœ¬ã®ç§»å‹•ã«è¨­å®šã™ã‚‹
+:nnoremap j gj
+:nnoremap k gk
+
+" æ¤œç´¢ãƒ‘ã‚¿ãƒ¼ãƒ³ã«ãŠã„ã¦å¤§æ–‡å­—ã¨å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„ã€‚ï¼ˆæœ‰åŠ¹:ignorecase/ç„¡åŠ¹:noignorecaseï¼‰
 :set noignorecase
-" ŒŸõƒpƒ^[ƒ“‚ª‘å•¶š‚ğŠÜ‚ñ‚Å‚¢‚½‚çƒIƒvƒVƒ‡ƒ“ 'ignorecase' ‚ğã‘‚«‚·‚éBi—LŒø:smartcase/–³Œø:nosmartcasej
+" æ¤œç´¢ãƒ‘ã‚¿ãƒ¼ãƒ³ãŒå¤§æ–‡å­—ã‚’å«ã‚“ã§ã„ãŸã‚‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ 'ignorecase' ã‚’ä¸Šæ›¸ãã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:smartcase/ç„¡åŠ¹:nosmartcaseï¼‰
 :set smartcase
 
-" ƒtƒ@ƒCƒ‹“à‚Ì <Tab> ‚ª‘Î‰‚·‚é‹ó”’‚Ì”B
+" ãƒ•ã‚¡ã‚¤ãƒ«å†…ã® <Tab> ãŒå¯¾å¿œã™ã‚‹ç©ºç™½ã®æ•°ã€‚
 :set tabstop=4
-" <Tab> ‚Ì‘}“ü‚â <BS> ‚Ìg—p“™‚Ì•ÒW‘€ì‚ğ‚·‚é‚Æ‚«‚ÉA<Tab> ‚ª‘Î‰‚·‚é‹ó”’‚Ì”B
+" <Tab> ã®æŒ¿å…¥ã‚„ <BS> ã®ä½¿ç”¨ç­‰ã®ç·¨é›†æ“ä½œã‚’ã™ã‚‹ã¨ãã«ã€<Tab> ãŒå¯¾å¿œã™ã‚‹ç©ºç™½ã®æ•°ã€‚
 :set softtabstop=4
-" ƒCƒ“ƒfƒ“ƒg‚ÌŠe’iŠK‚Ég‚í‚ê‚é‹ó”’‚Ì”B
+" ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã®å„æ®µéšã«ä½¿ã‚ã‚Œã‚‹ç©ºç™½ã®æ•°ã€‚
 :set shiftwidth=4
-" Insertƒ‚[ƒh‚Å <Tab> ‚ğ‘}“ü‚·‚é‚Æ‚«A‘ã‚í‚è‚É“KØ‚È”‚Ì‹ó”’‚ğg‚¤Bi—LŒø:expandtab/–³Œø:noexpandtabj
-:set noexpandtab
+" Insertãƒ¢ãƒ¼ãƒ‰ã§ <Tab> ã‚’æŒ¿å…¥ã™ã‚‹ã¨ãã€ä»£ã‚ã‚Šã«é©åˆ‡ãªæ•°ã®ç©ºç™½ã‚’ä½¿ã†ã€‚ï¼ˆæœ‰åŠ¹:expandtab/ç„¡åŠ¹:noexpandtabï¼‰
+:set expandtab
 
-" “ü—Í‚³‚ê‚Ä‚¢‚éƒeƒLƒXƒg‚ÌÅ‘å•Bs‚ª‚»‚ê‚æ‚è’·‚­‚È‚é‚ÆA‚±‚Ì•‚ğ’´‚¦‚È‚¢‚æ‚¤‚É‹ó”’‚ÌŒã‚Å‰üs‚³‚ê‚éB’l‚ğ 0 ‚Éİ’è‚·‚é‚Æ–³Œø‚É‚È‚éB
+" å…¥åŠ›ã•ã‚Œã¦ã„ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã®æœ€å¤§å¹…ã€‚è¡ŒãŒãã‚Œã‚ˆã‚Šé•·ããªã‚‹ã¨ã€ã“ã®å¹…ã‚’è¶…ãˆãªã„ã‚ˆã†ã«ç©ºç™½ã®å¾Œã§æ”¹è¡Œã•ã‚Œã‚‹ã€‚å€¤ã‚’ 0 ã«è¨­å®šã™ã‚‹ã¨ç„¡åŠ¹ã«ãªã‚‹ã€‚
 :set textwidth=0
-" V‚µ‚¢s‚ğŠJn‚µ‚½‚Æ‚« (Insertƒ‚[ƒh‚Å <CR> ‚ğ‘Å‚¿‚Ş‚©AƒRƒ}ƒ“ƒh "o"‚â "O" ‚ğg‚Á‚½‚Æ‚«)AV‚µ‚¢s‚ÌƒCƒ“ƒfƒ“ƒg‚ğŒ»İs‚Æ“¯‚¶‚­‚·‚éBi—LŒø:autoindent/–³Œø:noautoindentj
+" æ–°ã—ã„è¡Œã‚’é–‹å§‹ã—ãŸã¨ã (Insertãƒ¢ãƒ¼ãƒ‰ã§ <CR> ã‚’æ‰“ã¡è¾¼ã‚€ã‹ã€ã‚³ãƒãƒ³ãƒ‰ "o"ã‚„ "O" ã‚’ä½¿ã£ãŸã¨ã)ã€æ–°ã—ã„è¡Œã®ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã‚’ç¾åœ¨è¡Œã¨åŒã˜ãã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:autoindent/ç„¡åŠ¹:noautoindentï¼‰
 :set autoindent
 
-" ƒIƒ“‚Ì‚Æ‚«‚ÍAƒEƒBƒ“ƒhƒE‚Ì•‚æ‚è’·‚¢s‚ÍÜ‚è•Ô‚³‚êAŸ‚Ìs‚É‘±‚¯‚Ä•\¦‚³‚ê‚éBi—LŒø:wrap/–³Œø:nowrapj
+" ã‚ªãƒ³ã®ã¨ãã¯ã€ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å¹…ã‚ˆã‚Šé•·ã„è¡Œã¯æŠ˜ã‚Šè¿”ã•ã‚Œã€æ¬¡ã®è¡Œã«ç¶šã‘ã¦è¡¨ç¤ºã•ã‚Œã‚‹ã€‚ï¼ˆæœ‰åŠ¹:wrap/ç„¡åŠ¹:nowrapï¼‰
 :set wrap
 
-" ŒŸõ‚ªƒtƒ@ƒCƒ‹––”ö‚Ü‚Åi‚ñ‚¾‚çAƒtƒ@ƒCƒ‹æ“ª‚©‚çÄ‚ÑŒŸõ‚·‚éBi—LŒø:wrapscan/–³Œø:nowrapscanj
+" æ¤œç´¢ãŒãƒ•ã‚¡ã‚¤ãƒ«æœ«å°¾ã¾ã§é€²ã‚“ã ã‚‰ã€ãƒ•ã‚¡ã‚¤ãƒ«å…ˆé ­ã‹ã‚‰å†ã³æ¤œç´¢ã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:wrapscan/ç„¡åŠ¹:nowrapscanï¼‰
 :set wrapscan
-" ƒIƒ“‚Ì‚Æ‚«AƒRƒ}ƒ“ƒhƒ‰ƒCƒ“•âŠ®‚ªŠg’£ƒ‚[ƒh‚Ås‚í‚ê‚éBi—LŒø:wildmenu/–³Œø:nowildmenuj
+" ã‚ªãƒ³ã®ã¨ãã€ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³è£œå®ŒãŒæ‹¡å¼µãƒ¢ãƒ¼ãƒ‰ã§è¡Œã‚ã‚Œã‚‹ã€‚ï¼ˆæœ‰åŠ¹:wildmenu/ç„¡åŠ¹:nowildmenuï¼‰
 :set wildmenu
 
-" •Â‚¶Š‡ŒÊ‚ª“ü—Í‚³‚ê‚½‚Æ‚«A‘Î‰‚·‚éŠJ‚«Š‡ŒÊ‚É‚í‚¸‚©‚ÌŠÔƒWƒƒƒ“ƒv‚·‚éBi—LŒø:showmatch/–³Œø:noshowmatchj
+" é–‰ã˜æ‹¬å¼§ãŒå…¥åŠ›ã•ã‚ŒãŸã¨ãã€å¯¾å¿œã™ã‚‹é–‹ãæ‹¬å¼§ã«ã‚ãšã‹ã®é–“ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:showmatch/ç„¡åŠ¹:noshowmatchï¼‰
 :set showmatch
 
-" –ˆs‚Ì‘O‚És”Ô†‚ğ•\¦‚·‚éBi—LŒø:number/–³Œø:nonumberj
+" æ¯è¡Œã®å‰ã«è¡Œç•ªå·ã‚’è¡¨ç¤ºã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:number/ç„¡åŠ¹:nonumberï¼‰
 :set number
-" ƒJ[ƒ\ƒ‹‚ª‰½s–Ú‚Ì‰½—ñ–Ú‚É’u‚©‚ê‚Ä‚¢‚é‚©‚ğ•\¦‚·‚éBi—LŒø:ruler/–³Œø:norulerj
+" ã‚«ãƒ¼ã‚½ãƒ«ãŒä½•è¡Œç›®ã®ä½•åˆ—ç›®ã«ç½®ã‹ã‚Œã¦ã„ã‚‹ã‹ã‚’è¡¨ç¤ºã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:ruler/ç„¡åŠ¹:norulerï¼‰
 :set ruler
-" ƒ^ƒu•¶š‚ğ CTRL-I ‚Å•\¦‚µAs––‚É $ ‚Å•\¦‚·‚éBi—LŒø:list/–³Œø:nolistj
-:set list
-" Listƒ‚[ƒh (–ó’: ƒIƒvƒVƒ‡ƒ“ 'list' ‚ªƒIƒ“‚Ì‚Æ‚«) ‚Ég‚í‚ê‚é•¶š‚ğİ’è‚·‚éB
-:set listchars=tab:>-,extends:<,trail:-,eol:<
+" ã‚¿ãƒ–æ–‡å­—ã‚’ CTRL-I ã§è¡¨ç¤ºã—ã€è¡Œæœ«ã« $ ã§è¡¨ç¤ºã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:list/ç„¡åŠ¹:nolistï¼‰
+" :set list
+" Listãƒ¢ãƒ¼ãƒ‰ (è¨³æ³¨: ã‚ªãƒ—ã‚·ãƒ§ãƒ³ 'list' ãŒã‚ªãƒ³ã®ã¨ã) ã«ä½¿ã‚ã‚Œã‚‹æ–‡å­—ã‚’è¨­å®šã™ã‚‹ã€‚
+" :set listchars=tab:>-,extends:<,trail:-,eol:<
 
-" Å‰ºƒEƒBƒ“ƒhƒE‚É‚¢‚ÂƒXƒe[ƒ^ƒXs‚ª•\¦‚³‚ê‚é‚©‚ğİ’è‚·‚éB
-"               0: ‘S‚­•\¦‚µ‚È‚¢
-"               1: ƒEƒBƒ“ƒhƒE‚Ì”‚ª2ˆÈã‚Ì‚Æ‚«‚Ì‚İ•\¦
-"               2: í‚É•\¦
+" æœ€ä¸‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ã„ã¤ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡ŒãŒè¡¨ç¤ºã•ã‚Œã‚‹ã‹ã‚’è¨­å®šã™ã‚‹ã€‚
+"               0: å…¨ãè¡¨ç¤ºã—ãªã„
+"               1: ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æ•°ãŒ2ä»¥ä¸Šã®ã¨ãã®ã¿è¡¨ç¤º
+"               2: å¸¸ã«è¡¨ç¤º
 :set laststatus=2
-" ƒRƒ}ƒ“ƒh (‚Ìˆê•”) ‚ğ‰æ–Ê‚ÌÅ‰ºs‚É•\¦‚·‚éBi—LŒø:showcmd/–³Œø:noshowcmdj
+" ã‚³ãƒãƒ³ãƒ‰ (ã®ä¸€éƒ¨) ã‚’ç”»é¢ã®æœ€ä¸‹è¡Œã«è¡¨ç¤ºã™ã‚‹ã€‚ï¼ˆæœ‰åŠ¹:showcmd/ç„¡åŠ¹:noshowcmdï¼‰
 :set showcmd
 
-" ƒtƒ@ƒCƒ‹‚ğã‘‚«‚·‚é‘O‚ÉƒoƒbƒNƒAƒbƒv‚ğì‚éB‘‚«‚İ‚ª¬Œ÷‚µ‚Ä‚àƒoƒbƒNƒAƒbƒv‚Í‚»‚Ì‚Ü‚Üæ‚Á‚Ä‚¨‚­Bi—LŒø:backup/–³Œø:nobackupj
+" ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¸Šæ›¸ãã™ã‚‹å‰ã«ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä½œã‚‹ã€‚æ›¸ãè¾¼ã¿ãŒæˆåŠŸã—ã¦ã‚‚ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã¯ãã®ã¾ã¾å–ã£ã¦ãŠãã€‚ï¼ˆæœ‰åŠ¹:backup/ç„¡åŠ¹:nobackupï¼‰
 :set nobackup
-" ƒtƒ@ƒCƒ‹‚Ìã‘‚«‚Ì‘O‚ÉƒoƒbƒNƒAƒbƒv‚ğì‚éBƒIƒvƒVƒ‡ƒ“ 'backup' ‚ªƒIƒ“‚Å‚È‚¢ŒÀ‚èAƒoƒbƒNƒAƒbƒv‚Íã‘‚«‚É¬Œ÷‚µ‚½Œãíœ‚³‚ê‚éBi—LŒø:writebackup/–³Œø:nowritebackupj
+" ãƒ•ã‚¡ã‚¤ãƒ«ã®ä¸Šæ›¸ãã®å‰ã«ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä½œã‚‹ã€‚ã‚ªãƒ—ã‚·ãƒ§ãƒ³ 'backup' ãŒã‚ªãƒ³ã§ãªã„é™ã‚Šã€ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã¯ä¸Šæ›¸ãã«æˆåŠŸã—ãŸå¾Œå‰Šé™¤ã•ã‚Œã‚‹ã€‚ï¼ˆæœ‰åŠ¹:writebackup/ç„¡åŠ¹:nowritebackupï¼‰
 :set nowritebackup
 
-"yank‚µ‚½ƒeƒLƒXƒg‚ª–³–¼ƒŒƒWƒXƒ^‚¾‚¯‚Å‚È‚­A*ƒŒƒWƒXƒ^‚É‚à“ü‚é‚æ‚¤‚É‚·‚é
+"yankã—ãŸãƒ†ã‚­ã‚¹ãƒˆãŒç„¡åãƒ¬ã‚¸ã‚¹ã‚¿ã ã‘ã§ãªãã€*ãƒ¬ã‚¸ã‚¹ã‚¿ã«ã‚‚å…¥ã‚‹ã‚ˆã†ã«ã™ã‚‹
 :set clipboard+=unnamed
+
+""""""""""""""""""""""""""""""
+"æŒ¿å…¥ãƒ¢ãƒ¼ãƒ‰æ™‚ã€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ©ã‚¤ãƒ³ã®è‰²ã‚’å¤‰æ›´
+""""""""""""""""""""""""""""""
+let g:hi_insert = 'highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none'
+
+if has('syntax')
+  augroup InsertHook
+    autocmd!
+    autocmd InsertEnter * call s:StatusLine('Enter')
+    autocmd InsertLeave * call s:StatusLine('Leave')
+  augroup END
+endif
+
+let s:slhlcmd = ''
+function! s:StatusLine(mode)
+  if a:mode == 'Enter'
+    silent! let s:slhlcmd = 'highlight ' . s:GetHighlight('StatusLine')
+    silent exec g:hi_insert
+  else
+    highlight clear StatusLine
+    silent exec s:slhlcmd
+  endif
+endfunction
+
+function! s:GetHighlight(hi)
+  redir => hl
+  exec 'highlight '.a:hi
+  redir END
+  let hl = substitute(hl, '[\r\n]', '', 'g')
+  let hl = substitute(hl, 'xxx', '', '')
+  return hl
+endfunction
+
+" .vimrcã‚’é–‹ã
+nnoremap <Space>.  :<C-u>edit $MYVIMRC<CR>
+" source ~/.vimrc ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
+nnoremap <Space>,  :<C-u>source $MYVIMRC<CR> 
+
+""
+"" Vim-LaTeX
+""
+"set shellslash
+set grepprg=grep\ -nH\ $*
+
+let g:tex_flavor='latex'
+let g:Tex_AutoFolding = 0
+
+let g:Imap_UsePlaceHolders = 1
+let g:Imap_DeleteEmptyPlaceHolders = 1
+let g:Imap_StickyPlaceHolders = 0
+
+let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_FormatDependency_ps = 'dvi,ps'
+
+let g:Tex_CompileRule_dvi = 'platex -guess-input-enc -interaction=nonstopmode $*'
+let g:Tex_CompileRule_pdf = 'dvipdfmx $*.dvi'
+let g:Tex_CompileRule_ps = 'dvips -Ppdf -o $*.ps $*.dvi'
+
+let g:Tex_BibtexFlavor = 'upbibtex'
+let g:Tex_MakeIndexFlavor = 'makeindex $*.idx'
+
+let g:Tex_ViewRule_dvi = 'C:\texlive\2013\bin\win32\dviout.exe'
+let g:Tex_ViewRule_pdf = 'rundll32 shell32,ShellExec_RunDLL SumatraPDF -reuse-instance -inverse-search "\"' . $VIM . '\gvim.exe\" -n -c \":RemoteOpen +\%l \%f\""'
+
+
+" dwm.vim è¨­å®šï¼ˆå…¨ã¦ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼‰
+nnoremap <c-j> <c-w>w
+nnoremap <c-k> <c-w>W
+nmap <m-r> <Plug>DWMRotateCounterclockwise
+nmap <m-t> <Plug>DWMRotateClockwise
+nmap <c-n> <Plug>DWMNew
+nmap <c-c> <Plug>DWMClose
+nmap <c-@> <Plug>DWMFocus
+nmap <c-Space> <Plug>DWMFocus
+nmap <c-l> <Plug>DWMGrowMaster
+nmap <c-h> <Plug>DWMShrinkMaster
+ 
+" Unite è¨­å®š
+noremap zp :Unite buffer_tab file_mru<CR>
+noremap zn :UniteWithBufferDir -buffer-name=files file file/new<CR>
