@@ -1,6 +1,5 @@
 " 背景を透明にする
-gui
-"set transparency=230
+:set transparency=230
 
 " カラースキーマをロードする。
 :colorscheme billw

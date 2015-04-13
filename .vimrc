@@ -71,7 +71,7 @@ let g:quickrun_config = {
 " インデントの各段階に使われる空白の数。
 :set shiftwidth=4
 " Insertモードで <Tab> を挿入するとき、代わりに適切な数の空白を使う。（有効:expandtab/無効:noexpandtab）
-:set expandtab
+:set noexpandtab
 
 " 入力されているテキストの最大幅。行がそれより長くなると、この幅を超えないように空白の後で改行される。値を 0 に設定すると無効になる。
 :set textwidth=0
@@ -94,9 +94,9 @@ let g:quickrun_config = {
 " カーソルが何行目の何列目に置かれているかを表示する。（有効:ruler/無効:noruler）
 :set ruler
 " タブ文字を CTRL-I で表示し、行末に $ で表示する。（有効:list/無効:nolist）
-" :set list
+:set list
 " Listモード (訳注: オプション 'list' がオンのとき) に使われる文字を設定する。
-" :set listchars=tab:>-,extends:<,trail:-,eol:<
+:set listchars=tab:>-,extends:<,trail:-,eol:<
 
 " 最下ウィンドウにいつステータス行が表示されるかを設定する。
 "               0: 全く表示しない
